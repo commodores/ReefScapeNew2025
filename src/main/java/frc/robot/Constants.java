@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+
 import edu.wpi.first.math.util.Units;
 
 
@@ -22,11 +24,11 @@ public class Constants {
         public static final double kMinOutput = -1.0;
         public static final double MaxRPM = 5700;
 
-        public static final int kFeederStation = 0;
-        public static final int kLevel1 = 0;
-        public static final int kLevel2 = 0;
-        public static final int kLevel3 = 100;
-        public static final int kLevel4 = 150;
+
+        public static final double elevatorSpeed = 0.005;
+        public static final int elevatorMotorID = 9;
+        public static final double maxHeight = .1;
+        public static final IdleMode kIdleMode = IdleMode.kBrake;
           
 
     }
