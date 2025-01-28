@@ -12,6 +12,6 @@ public class ElevatorUp extends InstantCommand{
     
     @Override
     public void initialize() {
-        m_elevator.setPositionGoal(.2); //TODO find the right set-goal, might be 24
+        m_elevator.setPositionGoal(.0002); //TODO find the right set-goal, might be 24
     }
 }

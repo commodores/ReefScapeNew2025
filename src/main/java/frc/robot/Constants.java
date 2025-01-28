@@ -23,6 +23,7 @@ public class Constants {
         public static final double MaxOutput = 1.0;
         public static final double kMinOutput = -1.0;
         public static final double MaxRPM = 5700;
+        // create a max amps so we do not destroy the motors
 
 
         public static final double elevatorSpeed = 0.005;

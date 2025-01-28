@@ -15,17 +15,19 @@ import frc.robot.Constants;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 // TODO
 // - set up the PID loop
 // - set up encoder conversions
 
+// can probably take some things out of the subsystem. Copied from frc 868 team
 public class Elevator extends SubsystemBase {
     private final SparkMax m_elevator;
     private final RelativeEncoder m_encoder;
     private final ProfiledPIDController m_controller;
 
-    private int messageNum = 0;
+    
     private boolean overrideFlag = false;
     private double outputSpeed = 0;
     
@@ -60,6 +62,10 @@ public class Elevator extends SubsystemBase {
         }
     }
 
+    public void manual(double speed){
+        m_elevator.set(speed);
+    }
+
     public void overrideUp()
     {
         outputSpeed = Constants.ElevatorConstants.elevatorSpeed;
@@ -85,22 +91,9 @@ public class Elevator extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if(!overrideFlag){
-            outputSpeed = m_controller.calculate(m_encoder.getPosition());
-        }
+        
+        SmartDashboard.putNumber("Elevator Raw", m_controller.calculate(m_encoder.getPosition()));
 
-        if (messageNum >= 50)
-        {
-            System.out.printf("attempting to output %f\n", outputSpeed);
-            System.out.printf("Encoder: %.4f", m_encoder.getPosition());
-            messageNum = 0;
-        }
-        else
-        {
-            ++messageNum;
-        }
-
-        m_elevator.set(outputSpeed);
     }
 
     private void configMotor() {
