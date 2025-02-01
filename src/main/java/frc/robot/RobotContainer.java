@@ -16,11 +16,15 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.Configs.CoralSubsystem;
 import frc.robot.commands.ElevatorUp;
+import frc.robot.commands.IntakeIn;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.ElevatorPractice;
+import frc.robot.subsystems.ElevatorPractice.Setpoint;
+import frc.robot.subsystems.Intake;
 
 public class RobotContainer {
     public double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -36,10 +40,15 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     private final CommandXboxController joystick = new CommandXboxController(0);
+    private final CommandXboxController joystick1 = new CommandXboxController(1);
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-   public final Elevator m_Elevator = new Elevator();
+   //public final Elevator m_Elevator = new Elevator();
+
+     private final ElevatorPractice m_elevator2 = new ElevatorPractice();
+
+   public final Intake m_Intake = new Intake();
 
 
 
@@ -60,7 +69,7 @@ public class RobotContainer {
             )
         );
 
-        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        //joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         joystick.b().whileTrue(drivetrain.applyRequest(() ->
             point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
         ));
@@ -76,17 +85,32 @@ public class RobotContainer {
         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         //having elevator go to a certain position
-        joystick.y().onTrue(m_Elevator.runOnce(() -> m_Elevator.setPositionGoal(.02)));
-        joystick.a().onTrue(m_Elevator.runOnce(() -> m_Elevator.setPositionGoal(0.0)));
+        //joystick.y().onTrue(m_Elevator.runOnce(() -> m_Elevator.setPositionGoal(.02)));
+        //joystick.a().onTrue(m_Elevator.runOnce(() -> m_Elevator.setPositionGoal(0.0)));
 
         //Calling ElevatorUp command
-       joystick.b().onTrue(new ElevatorUp(m_Elevator));
+       //joystick.b().onTrue(new ElevatorUp(m_Elevator));
 
        //manual elevator that moves with speed
-       joystick.x().whileTrue(new InstantCommand(() -> m_Elevator.manual(1.0)));
-       joystick.x().onFalse(new InstantCommand(() -> m_Elevator.manual(0)));
+       //joystick.x().whileTrue(new InstantCommand(() -> m_Elevator.manual(1.0)));
+       //joystick.x().onFalse(new InstantCommand(() -> m_Elevator.manual(0)));
 
-      
+         // A Button -> Elevator/Arm to level 2 position
+         joystick.a().onTrue(m_elevator2.setSetpointCommand(Setpoint.kLevel2));
+
+        // X Button -> Elevator/Arm to level 3 position
+        joystick.x().onTrue(m_elevator2.setSetpointCommand(Setpoint.kLevel3));
+
+        // Y Button -> Elevator/Arm to level 4 position
+       joystick.y().onTrue(m_elevator2.setSetpointCommand(Setpoint.kLevel4));
+
+      //Intake Controls
+      //joystick.a().onTrue(new IntakeIn(m_Intake));
+
+      joystick.b().whileTrue(new InstantCommand(() -> m_Intake.runIntakeSpeed(.5)));
+      joystick.b().onFalse(new InstantCommand(() -> m_Intake.runIntakeSpeed(0)));
+
+
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
